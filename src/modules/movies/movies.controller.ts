@@ -10,7 +10,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import type { Movie } from '../../generated/prisma/client.js';
+import { Role, type Movie } from '../../generated/prisma/client.js';
 import {
   createMovieSchema,
   movieIdSchema,
@@ -20,17 +20,22 @@ import {
 } from './movies.schemas.js';
 import { MoviesService } from './movies.service.js';
 import { SyncMoviesResult } from './types/movie-sync.js';
+import { Public } from '../auth/decorators/public.decorator.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 
 @Controller('movies')
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
+  @Public()
   @Get()
   findAll(): Promise<Movie[]> {
     return this.moviesService.findAll();
   }
 
+
   @Get(':id')
+  @Roles([Role.REGULAR])
   async findById(
     @Param('id', { schema: movieIdSchema }) id: string,
   ): Promise<Movie> {
@@ -45,6 +50,7 @@ export class MoviesController {
   }
 
   @Post()
+  @Roles([Role.ADMIN])
   create(
     @Body({ schema: createMovieSchema }) body: CreateMovieDto,
   ): Promise<Movie> {
@@ -52,6 +58,7 @@ export class MoviesController {
   }
 
   @Patch(':id')
+  @Roles([Role.ADMIN])
   async update(
     @Param('id', { schema: movieIdSchema }) id: string,
     @Body({ schema: updateMovieSchema }) body: UpdateMovieDto,
@@ -67,6 +74,7 @@ export class MoviesController {
   }
 
   @Delete(':id')
+  @Roles([Role.ADMIN])
   @HttpCode(204)
   async delete(
     @Param('id', { schema: movieIdSchema }) id: string,
@@ -82,6 +90,7 @@ export class MoviesController {
   }
 
   @Post('sync')
+  @Roles([Role.ADMIN])
   async sync(): Promise<SyncMoviesResult> {
     const result = await this.moviesService.syncMovies();
 
