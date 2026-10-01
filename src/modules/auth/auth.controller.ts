@@ -2,6 +2,8 @@ import {
   Body,
   ConflictException,
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   SerializeOptions,
   UnauthorizedException,
@@ -51,16 +53,16 @@ export class AuthController {
   ): Promise<RegisteredUser> {
     const result = await this.authService.signup(body.email, body.password);
 
-    return result.match({
-      ok: (user) => user,
-      err: (error) => {
-        throw new ConflictException(error.message);
-      },
-    });
+    if (result.isErr()) {
+      throw new ConflictException(result.error.message);
+    }
+
+    return result.value;
   }
 
   @Public()
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   @SerializeOptions({
     schema: loginResponseSchema,
   })
@@ -76,11 +78,10 @@ export class AuthController {
   ): Promise<LoginResult> {
     const result = await this.authService.login(body.email, body.password);
 
-    return result.match({
-      ok: (loginResult) => loginResult,
-      err: (error) => {
-        throw new UnauthorizedException(error.message);
-      },
-    });
+    if (result.isErr()) {
+      throw new UnauthorizedException(result.error.message);
+    }
+
+    return result.value;
   }
 }

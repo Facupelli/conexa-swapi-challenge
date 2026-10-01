@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   NotFoundException,
   Param,
   Patch,
@@ -77,12 +78,11 @@ export class MoviesController {
   ): Promise<Movie> {
     const result = await this.moviesService.findById(id);
 
-    return result.match({
-      ok: (movie) => movie,
-      err: (error) => {
-        throw new NotFoundException(error.message);
-      },
-    });
+    if (result.isErr()) {
+      throw new NotFoundException(result.error.message);
+    }
+
+    return result.value;
   }
 
   @Post()
@@ -127,12 +127,11 @@ export class MoviesController {
   ): Promise<Movie> {
     const result = await this.moviesService.update(id, body);
 
-    return result.match({
-      ok: (movie) => movie,
-      err: (error) => {
-        throw new NotFoundException(error.message);
-      },
-    });
+    if (result.isErr()) {
+      throw new NotFoundException(result.error.message);
+    }
+
+    return result.value;
   }
 
   @Delete(':id')
@@ -153,15 +152,15 @@ export class MoviesController {
   ): Promise<void> {
     const result = await this.moviesService.delete(id);
 
-    return result.match({
-      ok: () => undefined,
-      err: (error) => {
-        throw new NotFoundException(error.message);
-      },
-    });
+    if (result.isErr()) {
+      throw new NotFoundException(result.error.message);
+    }
+
+    return result.value;
   }
 
   @Post('sync')
+  @HttpCode(HttpStatus.OK)
   @Roles([Role.ADMIN])
   @SerializeOptions({
     schema: syncMoviesResponseSchema,
@@ -182,11 +181,10 @@ export class MoviesController {
   async sync(): Promise<SyncMoviesResult> {
     const result = await this.moviesService.syncMovies();
 
-    return result.match({
-      ok: (syncResult) => syncResult,
-      err: (error) => {
-        throw new BadGatewayException(error.message);
-      },
-    });
+    if (result.isErr()) {
+      throw new BadGatewayException(result.error.message);
+    }
+
+    return result.value;
   }
 }
