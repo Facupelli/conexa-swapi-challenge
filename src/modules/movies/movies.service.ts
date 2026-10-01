@@ -11,10 +11,16 @@ import type {
   CreateMovieInput,
   UpdateMovieInput,
 } from './types/movie-input.js';
+import { SwapiClientError } from './integrations/swapi/swapi.errors.js';
+import { SwapiClient } from './integrations/swapi/swapi.client.js';
+import { SyncMoviesResult } from './types/movie-sync.js';
 
 @Injectable()
 export class MoviesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly swapiClient: SwapiClient,
+  ) {}
 
   findAll(): Promise<Movie[]> {
     return this.prisma.movie.findMany();
@@ -76,5 +82,40 @@ export class MoviesService {
 
       throw error;
     }
+  }
+
+   async syncMovies(): Promise<
+    ResultType<SyncMoviesResult, SwapiClientError>
+  > {
+    const moviesResult = await this.swapiClient.fetchMovies();
+
+    if (Result.isError(moviesResult)) {
+      return moviesResult;
+    }
+
+    await this.prisma.$transaction(async (transaction) => {
+      for (const movie of moviesResult.value) {
+        await transaction.movie.upsert({
+          where: {
+            externalId: movie.externalId,
+          },
+          create: {
+            externalId: movie.externalId,
+            title: movie.title,
+            description: movie.description,
+            releaseDate: movie.releaseDate,
+          },
+          update: {
+            title: movie.title,
+            description: movie.description,
+            releaseDate: movie.releaseDate,
+          },
+        });
+      }
+    });
+
+    return Result.ok({
+      synchronized: moviesResult.value.length,
+    });
   }
 }

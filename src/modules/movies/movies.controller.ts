@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   Body,
   Controller,
   Delete,
@@ -18,6 +19,7 @@ import {
   type UpdateMovieDto,
 } from './movies.schemas.js';
 import { MoviesService } from './movies.service.js';
+import { SyncMoviesResult } from './types/movie-sync.js';
 
 @Controller('movies')
 export class MoviesController {
@@ -75,6 +77,18 @@ export class MoviesController {
       ok: () => undefined,
       err: (error) => {
         throw new NotFoundException(error.message);
+      },
+    });
+  }
+
+  @Post('sync')
+  async sync(): Promise<SyncMoviesResult> {
+    const result = await this.moviesService.syncMovies();
+
+    return result.match({
+      ok: (syncResult) => syncResult,
+      err: (error) => {
+        throw new BadGatewayException(error.message);
       },
     });
   }
