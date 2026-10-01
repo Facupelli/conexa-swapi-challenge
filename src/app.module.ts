@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { environmentSchema } from './config/env.schema.js';
+import { MoviesModule } from './modules/movies/movies.module.js';
 
 @Module({
   imports: [
@@ -9,6 +10,7 @@ import { environmentSchema } from './config/env.schema.js';
         cache: true,
         validationSchema: environmentSchema,
     }),
+    MoviesModule,
   ],
 })
 export class AppModule {}
