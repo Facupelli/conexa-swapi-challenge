@@ -15,14 +15,10 @@ describe('RolesGuard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    guard = new RolesGuard(
-      reflector as unknown as Reflector,
-    );
+    guard = new RolesGuard(reflector as unknown as Reflector);
   });
 
-  function createContext(
-    user: AuthenticatedUser,
-  ): ExecutionContext {
+  function createContext(user: AuthenticatedUser): ExecutionContext {
     return {
       getHandler: vi.fn(),
       getClass: vi.fn(),
@@ -44,9 +40,7 @@ describe('RolesGuard', () => {
   });
 
   it('allows a regular user when REGULAR is required', () => {
-    reflector.getAllAndOverride.mockReturnValueOnce([
-      Role.REGULAR,
-    ]);
+    reflector.getAllAndOverride.mockReturnValueOnce([Role.REGULAR]);
 
     const context = createContext({
       id: 'user-id',
@@ -57,9 +51,7 @@ describe('RolesGuard', () => {
   });
 
   it('rejects a regular user when ADMIN is required', () => {
-    reflector.getAllAndOverride.mockReturnValueOnce([
-      Role.ADMIN,
-    ]);
+    reflector.getAllAndOverride.mockReturnValueOnce([Role.ADMIN]);
 
     const context = createContext({
       id: 'user-id',
@@ -70,9 +62,7 @@ describe('RolesGuard', () => {
   });
 
   it('rejects an admin when REGULAR is required', () => {
-    reflector.getAllAndOverride.mockReturnValueOnce([
-      Role.REGULAR,
-    ]);
+    reflector.getAllAndOverride.mockReturnValueOnce([Role.REGULAR]);
 
     const context = createContext({
       id: 'admin-id',

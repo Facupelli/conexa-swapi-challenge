@@ -3,10 +3,7 @@ import { Test } from '@nestjs/testing';
 import { Result } from 'better-result';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SwapiClient } from './swapi.client.js';
-import {
-  SwapiContractError,
-  SwapiUnavailableError,
-} from './swapi.errors.js';
+import { SwapiContractError, SwapiUnavailableError } from './swapi.errors.js';
 
 type HttpGet = (url: string) => Promise<{ data: unknown }>;
 

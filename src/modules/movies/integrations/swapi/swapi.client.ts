@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { HttpClient, InjectHttpClient } from '@nestjs/http-client';
-import {
-  Result,
-  type Result as ResultType,
-} from 'better-result';
+import { Result, type Result as ResultType } from 'better-result';
 import * as v from 'valibot';
 import type { MovieImport } from '../../types/movie-import.js';
 import {
@@ -17,13 +14,11 @@ import { swapiFilmsResponseSchema } from './swapi.schema.js';
 @Injectable()
 export class SwapiClient {
   constructor(
-    @InjectHttpClient("swapi")
-    private readonly httpClient: HttpClient
+    @InjectHttpClient('swapi')
+    private readonly httpClient: HttpClient,
   ) {}
 
-  async fetchMovies(): Promise<
-    ResultType<MovieImport[], SwapiClientError>
-  > {
+  async fetchMovies(): Promise<ResultType<MovieImport[], SwapiClientError>> {
     const responseResult = await Result.tryPromise({
       try: () => this.httpClient.get<unknown>('/films'),
       catch: (cause) =>

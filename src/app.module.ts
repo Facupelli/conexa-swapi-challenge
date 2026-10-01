@@ -7,10 +7,10 @@ import { MoviesModule } from './modules/movies/movies.module.js';
 
 @Module({
   imports: [
-      ConfigModule.forRoot({
-        isGlobal: true,
-        cache: true,
-        validationSchema: environmentSchema,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      validationSchema: environmentSchema,
     }),
     AuthModule,
     UsersModule,

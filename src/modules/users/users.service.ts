@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Result, type Result as ResultType } from 'better-result';
 
-import {
-  Role,
-  type User,
-} from '../../generated/prisma/client.js';
+import { Role, type User } from '../../generated/prisma/client.js';
 import { isPrismaUniqueConstraintError } from '../../prisma/prisma.errors.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { normalizeEmail } from './normalize-email.js';
@@ -49,9 +46,7 @@ export class UsersService {
       return Result.ok(user);
     } catch (error) {
       if (isPrismaUniqueConstraintError(error)) {
-        return Result.err(
-          emailAlreadyExists(normalizedEmail),
-        );
+        return Result.err(emailAlreadyExists(normalizedEmail));
       }
 
       throw error;

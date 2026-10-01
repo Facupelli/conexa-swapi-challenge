@@ -13,6 +13,4 @@ export const swapiFilmsResponseSchema = v.object({
   result: v.array(swapiFilmSchema),
 });
 
-export type SwapiFilmsResponse = v.InferOutput<
-  typeof swapiFilmsResponseSchema
->;
+export type SwapiFilmsResponse = v.InferOutput<typeof swapiFilmsResponseSchema>;

@@ -13,10 +13,7 @@ import {
   type SignupDto,
 } from './auth.schemas.js';
 import { AuthService } from './auth.service.js';
-import type {
-  LoginResult,
-  RegisteredUser,
-} from './auth.types.js';
+import type { LoginResult, RegisteredUser } from './auth.types.js';
 import { Public } from './decorators/public.decorator.js';
 
 @Controller('auth')
@@ -28,10 +25,7 @@ export class AuthController {
   async signup(
     @Body({ schema: signupSchema }) body: SignupDto,
   ): Promise<RegisteredUser> {
-    const result = await this.authService.signup(
-      body.email,
-      body.password,
-    );
+    const result = await this.authService.signup(body.email, body.password);
 
     return result.match({
       ok: (user) => user,
@@ -46,10 +40,7 @@ export class AuthController {
   async login(
     @Body({ schema: loginSchema }) body: LoginDto,
   ): Promise<LoginResult> {
-    const result = await this.authService.login(
-      body.email,
-      body.password,
-    );
+    const result = await this.authService.login(body.email, body.password);
 
     return result.match({
       ok: (loginResult) => loginResult,

@@ -12,6 +12,4 @@ export class SwapiContractError extends TaggedError('SwapiContractError')<{
   message: string;
 }> {}
 
-export type SwapiClientError =
-  | SwapiUnavailableError
-  | SwapiContractError;
+export type SwapiClientError = SwapiUnavailableError | SwapiContractError;

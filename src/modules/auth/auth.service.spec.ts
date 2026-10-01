@@ -49,14 +49,9 @@ describe('AuthService', () => {
     it('hashes the password and creates a regular user', async () => {
       vi.mocked(hash).mockResolvedValueOnce('hashed-password');
 
-      usersService.createRegularUser.mockResolvedValueOnce(
-        Result.ok(user),
-      );
+      usersService.createRegularUser.mockResolvedValueOnce(Result.ok(user));
 
-      const result = await service.signup(
-        'facu@example.com',
-        'password123',
-      );
+      const result = await service.signup('facu@example.com', 'password123');
 
       expect(hash).toHaveBeenCalledWith('password123');
 
@@ -85,14 +80,9 @@ describe('AuthService', () => {
 
       const error = emailAlreadyExists('facu@example.com');
 
-      usersService.createRegularUser.mockResolvedValueOnce(
-        Result.err(error),
-      );
+      usersService.createRegularUser.mockResolvedValueOnce(Result.err(error));
 
-      const result = await service.signup(
-        'facu@example.com',
-        'password123',
-      );
+      const result = await service.signup('facu@example.com', 'password123');
 
       expect(Result.isError(result)).toBe(true);
 
@@ -111,19 +101,11 @@ describe('AuthService', () => {
       vi.mocked(verify).mockResolvedValueOnce(true);
       jwtService.signAsync.mockResolvedValueOnce('access-token');
 
-      const result = await service.login(
-        'facu@example.com',
-        'password123',
-      );
+      const result = await service.login('facu@example.com', 'password123');
 
-      expect(usersService.findByEmail).toHaveBeenCalledWith(
-        'facu@example.com',
-      );
+      expect(usersService.findByEmail).toHaveBeenCalledWith('facu@example.com');
 
-      expect(verify).toHaveBeenCalledWith(
-        user.passwordHash,
-        'password123',
-      );
+      expect(verify).toHaveBeenCalledWith(user.passwordHash, 'password123');
 
       expect(jwtService.signAsync).toHaveBeenCalledWith({
         sub: user.id,
@@ -139,10 +121,7 @@ describe('AuthService', () => {
     it('returns InvalidCredentialsError when the user does not exist', async () => {
       usersService.findByEmail.mockResolvedValueOnce(null);
 
-      const result = await service.login(
-        'missing@example.com',
-        'password123',
-      );
+      const result = await service.login('missing@example.com', 'password123');
 
       expect(Result.isError(result)).toBe(true);
 
@@ -160,10 +139,7 @@ describe('AuthService', () => {
       usersService.findByEmail.mockResolvedValueOnce(user);
       vi.mocked(verify).mockResolvedValueOnce(false);
 
-      const result = await service.login(
-        'facu@example.com',
-        'wrong-password',
-      );
+      const result = await service.login('facu@example.com', 'wrong-password');
 
       expect(Result.isError(result)).toBe(true);
 

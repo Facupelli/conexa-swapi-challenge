@@ -1,9 +1,6 @@
 import { Result } from 'better-result';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  type Movie,
-  Prisma,
-} from '../../generated/prisma/client.js';
+import { type Movie, Prisma } from '../../generated/prisma/client.js';
 import type { PrismaService } from '../../prisma/prisma.service.js';
 import { SwapiClient } from './integrations/swapi/swapi.client.js';
 import { SwapiUnavailableError } from './integrations/swapi/swapi.errors.js';
@@ -34,9 +31,8 @@ const prisma = {
     delete: vi.fn(),
   },
   $transaction: vi.fn(
-    async (
-      callback: (tx: typeof transaction) => Promise<unknown>,
-    ) => callback(transaction),
+    async (callback: (tx: typeof transaction) => Promise<unknown>) =>
+      callback(transaction),
   ),
 };
 
@@ -115,9 +111,7 @@ describe('MoviesService', () => {
 
   describe('update', () => {
     it('returns MovieNotFoundError when Prisma reports a missing record', async () => {
-      prisma.movie.update.mockRejectedValueOnce(
-        prismaRecordNotFoundError(),
-      );
+      prisma.movie.update.mockRejectedValueOnce(prismaRecordNotFoundError());
 
       const result = await service.update(movie.id, {
         title: 'Updated title',
@@ -148,9 +142,7 @@ describe('MoviesService', () => {
 
   describe('delete', () => {
     it('returns MovieNotFoundError when Prisma reports a missing record', async () => {
-      prisma.movie.delete.mockRejectedValueOnce(
-        prismaRecordNotFoundError(),
-      );
+      prisma.movie.delete.mockRejectedValueOnce(prismaRecordNotFoundError());
 
       const result = await service.delete(movie.id);
 
@@ -182,9 +174,7 @@ describe('MoviesService', () => {
         },
       ];
 
-      swapiClient.fetchMovies.mockResolvedValueOnce(
-        Result.ok(importedMovies),
-      );
+      swapiClient.fetchMovies.mockResolvedValueOnce(Result.ok(importedMovies));
 
       const result = await service.syncMovies();
 
@@ -241,9 +231,7 @@ describe('MoviesService', () => {
         message: 'Failed to fetch movies from SWAPI',
       });
 
-      swapiClient.fetchMovies.mockResolvedValueOnce(
-        Result.err(error),
-      );
+      swapiClient.fetchMovies.mockResolvedValueOnce(Result.err(error));
 
       const result = await service.syncMovies();
 

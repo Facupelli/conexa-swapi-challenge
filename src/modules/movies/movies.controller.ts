@@ -33,7 +33,6 @@ export class MoviesController {
     return this.moviesService.findAll();
   }
 
-
   @Get(':id')
   @Roles([Role.REGULAR])
   async findById(

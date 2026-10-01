@@ -1,9 +1,7 @@
 import type { MovieImport } from '../../types/movie-import.js';
 import type { SwapiFilmsResponse } from './swapi.schema.js';
 
-export function mapSwapiMovies(
-  response: SwapiFilmsResponse,
-): MovieImport[] {
+export function mapSwapiMovies(response: SwapiFilmsResponse): MovieImport[] {
   return response.result.map(({ uid, properties }) => ({
     externalId: uid,
     title: properties.title,

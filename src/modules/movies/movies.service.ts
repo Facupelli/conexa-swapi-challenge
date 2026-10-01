@@ -3,10 +3,7 @@ import { Result, type Result as ResultType } from 'better-result';
 import type { Movie } from '../../generated/prisma/client.js';
 import { isPrismaRecordNotFoundError } from '../../prisma/prisma.errors.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import {
-  movieNotFound,
-  type MovieNotFoundError,
-} from './movies.errors.js';
+import { movieNotFound, type MovieNotFoundError } from './movies.errors.js';
 import type {
   CreateMovieInput,
   UpdateMovieInput,
@@ -26,9 +23,7 @@ export class MoviesService {
     return this.prisma.movie.findMany();
   }
 
-  async findById(
-    id: string,
-  ): Promise<ResultType<Movie, MovieNotFoundError>> {
+  async findById(id: string): Promise<ResultType<Movie, MovieNotFoundError>> {
     const movie = await this.prisma.movie.findUnique({
       where: { id },
     });
@@ -66,9 +61,7 @@ export class MoviesService {
     }
   }
 
-  async delete(
-    id: string,
-  ): Promise<ResultType<void, MovieNotFoundError>> {
+  async delete(id: string): Promise<ResultType<void, MovieNotFoundError>> {
     try {
       await this.prisma.movie.delete({
         where: { id },
@@ -84,9 +77,7 @@ export class MoviesService {
     }
   }
 
-   async syncMovies(): Promise<
-    ResultType<SyncMoviesResult, SwapiClientError>
-  > {
+  async syncMovies(): Promise<ResultType<SyncMoviesResult, SwapiClientError>> {
     const moviesResult = await this.swapiClient.fetchMovies();
 
     if (Result.isError(moviesResult)) {

@@ -23,13 +23,10 @@ const prisma = {
 };
 
 function prismaUniqueConstraintError() {
-  return new Prisma.PrismaClientKnownRequestError(
-    'Unique constraint failed',
-    {
-      code: 'P2002',
-      clientVersion: '7.0.0',
-    },
-  );
+  return new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
+    code: 'P2002',
+    clientVersion: '7.0.0',
+  });
 }
 
 describe('UsersService', () => {
@@ -38,9 +35,7 @@ describe('UsersService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    service = new UsersService(
-      prisma as unknown as PrismaService,
-    );
+    service = new UsersService(prisma as unknown as PrismaService);
   });
 
   describe('createRegularUser', () => {
@@ -70,9 +65,7 @@ describe('UsersService', () => {
     });
 
     it('returns EmailAlreadyExistsError when the email unique constraint is violated', async () => {
-      prisma.user.create.mockRejectedValueOnce(
-        prismaUniqueConstraintError(),
-      );
+      prisma.user.create.mockRejectedValueOnce(prismaUniqueConstraintError());
 
       const result = await service.createRegularUser(
         '  Facu@Example.COM  ',

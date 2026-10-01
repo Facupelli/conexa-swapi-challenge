@@ -8,11 +8,7 @@ import {
   invalidCredentials,
   type InvalidCredentialsError,
 } from './auth.errors.js';
-import type {
-  JwtPayload,
-  LoginResult,
-  RegisteredUser,
-} from './auth.types.js';
+import type { JwtPayload, LoginResult, RegisteredUser } from './auth.types.js';
 
 @Injectable()
 export class AuthService {
@@ -49,10 +45,7 @@ export class AuthService {
       return Result.err(invalidCredentials());
     }
 
-    const passwordMatches = await verify(
-      user.passwordHash,
-      password,
-    );
+    const passwordMatches = await verify(user.passwordHash, password);
 
     if (!passwordMatches) {
       return Result.err(invalidCredentials());

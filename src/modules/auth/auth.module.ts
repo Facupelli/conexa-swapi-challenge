@@ -17,17 +17,14 @@ import { RolesGuard } from './guards/roles.guard.js';
     PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
-      useFactory: (
-        configService: ConfigService<Environment, true>,
-      ) => ({
+      useFactory: (configService: ConfigService<Environment, true>) => ({
         secret: configService.get('JWT_SECRET', {
           infer: true,
         }),
         signOptions: {
-          expiresIn: configService.get(
-            'JWT_EXPIRES_IN_SECONDS',
-            { infer: true },
-          ),
+          expiresIn: configService.get('JWT_EXPIRES_IN_SECONDS', {
+            infer: true,
+          }),
         },
       }),
     }),
@@ -36,7 +33,7 @@ import { RolesGuard } from './guards/roles.guard.js';
   providers: [
     AuthService,
     JwtStrategy,
-     {
+    {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },

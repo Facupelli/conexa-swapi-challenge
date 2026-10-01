@@ -13,9 +13,7 @@ import { MoviesController } from './movies.controller.js';
     HttpClientModule.registerAsync({
       name: 'swapi',
       inject: [ConfigService],
-      useFactory: (
-        configService: ConfigService<Environment, true>,
-      ) => ({
+      useFactory: (configService: ConfigService<Environment, true>) => ({
         baseUrl: configService.get('SWAPI_BASE_URL', {
           infer: true,
         }),
