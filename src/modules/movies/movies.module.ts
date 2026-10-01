@@ -5,6 +5,7 @@ import type { Environment } from '../../config/env.schema.js';
 import { SwapiClient } from './integrations/swapi/swapi.client.js';
 import { PrismaModule } from '../../prisma/prisma.module.js';
 import { MoviesService } from './movies.service.js';
+import { MoviesController } from './movies.controller.js';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MoviesService } from './movies.service.js';
       }),
     }),
   ],
+  controllers: [MoviesController],
   providers: [MoviesService, SwapiClient],
 })
 export class MoviesModule {}
