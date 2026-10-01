@@ -3,6 +3,7 @@ import {
   ConflictException,
   Controller,
   Post,
+  SerializeOptions,
   UnauthorizedException,
 } from '@nestjs/common';
 
@@ -15,13 +16,36 @@ import {
 import { AuthService } from './auth.service.js';
 import type { LoginResult, RegisteredUser } from './auth.types.js';
 import { Public } from './decorators/public.decorator.js';
+import {
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import {
+  loginResponseSchema,
+  registeredUserResponseSchema,
+} from './auth.response.schema.js';
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('signup')
+  @SerializeOptions({
+    schema: registeredUserResponseSchema,
+  })
+  @ApiOperation({ summary: 'Register a regular user' })
+  @ApiCreatedResponse({
+    standardSchema: registeredUserResponseSchema,
+  })
+  @ApiConflictResponse({
+    description: 'A user with this email already exists',
+  })
   async signup(
     @Body({ schema: signupSchema }) body: SignupDto,
   ): Promise<RegisteredUser> {
@@ -37,6 +61,16 @@ export class AuthController {
 
   @Public()
   @Post('login')
+  @SerializeOptions({
+    schema: loginResponseSchema,
+  })
+  @ApiOperation({ summary: 'Login and obtain an access token' })
+  @ApiOkResponse({
+    standardSchema: loginResponseSchema,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Invalid email or password',
+  })
   async login(
     @Body({ schema: loginSchema }) body: LoginDto,
   ): Promise<LoginResult> {
