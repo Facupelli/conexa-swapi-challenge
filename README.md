@@ -4,6 +4,23 @@ API backend desarrollada con NestJS para gestionar películas y sincronizar info
 
 Incluye autenticación JWT, autorización por roles, persistencia en PostgreSQL, CRUD de películas, sincronización con SWAPI, documentación OpenAPI y pruebas unitarias.
 
+## Demo
+
+La API se encuentra desplegada en Render y utiliza PostgreSQL en Neon.
+
+- **API:** https://conexa-swapi-challenge.onrender.com
+- **Swagger:** https://conexa-swapi-challenge.onrender.com/api/docs
+
+> **Nota sobre el primer acceso:** el servicio utiliza el plan gratuito de Render y puede suspenderse después de un período de inactividad. El primer request puede tardar alrededor de un minuto mientras la instancia vuelve a iniciar. Si el cliente corta la conexión antes, esperar unos segundos y reintentar.
+
+### Usuario administrador
+
+El entorno desplegado cuenta con un usuario administrador previamente creado:
+
+```text
+Email: admin@conexa.prod
+```
+
 ## Funcionalidades
 
 - Registro e inicio de sesión
