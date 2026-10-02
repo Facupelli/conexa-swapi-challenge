@@ -26,6 +26,7 @@ import { Public } from '../auth/decorators/public.decorator.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import {
   ApiBadGatewayResponse,
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -34,8 +35,10 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
+  movieListResponseSchema,
   movieResponseSchema,
   syncMoviesResponseSchema,
 } from './movies.response.schemas.js';
@@ -51,6 +54,9 @@ export class MoviesController {
     schema: movieResponseSchema,
   })
   @ApiOperation({ summary: 'List movies' })
+  @ApiOkResponse({
+    standardSchema: movieListResponseSchema,
+  })
   findAll(): Promise<Movie[]> {
     return this.moviesService.findAll();
   }
@@ -66,6 +72,12 @@ export class MoviesController {
   })
   @ApiOkResponse({
     standardSchema: movieResponseSchema,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid movie ID',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token is missing or invalid',
   })
   @ApiForbiddenResponse({
     description: 'Requires the REGULAR role',
@@ -97,6 +109,12 @@ export class MoviesController {
   @ApiCreatedResponse({
     standardSchema: movieResponseSchema,
   })
+  @ApiBadRequestResponse({
+    description: 'Invalid movie data',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token is missing or invalid',
+  })
   @ApiForbiddenResponse({
     description: 'Requires the ADMIN role',
   })
@@ -118,8 +136,17 @@ export class MoviesController {
   @ApiOkResponse({
     standardSchema: movieResponseSchema,
   })
+  @ApiBadRequestResponse({
+    description: 'Invalid movie ID or update data',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token is missing or invalid',
+  })
   @ApiForbiddenResponse({
     description: 'Requires the ADMIN role',
+  })
+  @ApiNotFoundResponse({
+    description: 'Movie not found',
   })
   async update(
     @Param('id', { schema: movieIdSchema }) id: string,
@@ -143,8 +170,17 @@ export class MoviesController {
   @ApiNoContentResponse({
     description: 'Movie deleted successfully',
   })
+  @ApiBadRequestResponse({
+    description: 'Invalid movie ID',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token is missing or invalid',
+  })
   @ApiForbiddenResponse({
     description: 'Requires the ADMIN role',
+  })
+  @ApiNotFoundResponse({
+    description: 'Movie not found',
   })
   @HttpCode(204)
   async delete(
@@ -171,6 +207,9 @@ export class MoviesController {
   })
   @ApiOkResponse({
     standardSchema: syncMoviesResponseSchema,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Bearer token is missing or invalid',
   })
   @ApiForbiddenResponse({
     description: 'Requires the ADMIN role',

@@ -20,7 +20,9 @@ export class MoviesService {
   ) {}
 
   findAll(): Promise<Movie[]> {
-    return this.prisma.movie.findMany();
+    return this.prisma.movie.findMany({
+      orderBy: [{ releaseDate: 'asc' }, { id: 'asc' }],
+    });
   }
 
   async findById(id: string): Promise<ResultType<Movie, MovieNotFoundError>> {

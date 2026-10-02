@@ -17,6 +17,8 @@ export const movieResponseSchema = v.object({
   updatedAt: dateTimeResponseSchema,
 });
 
+export const movieListResponseSchema = v.array(movieResponseSchema);
+
 export const syncMoviesResponseSchema = v.object({
   synchronized: v.pipe(v.number(), v.integer(), v.minValue(0)),
 });

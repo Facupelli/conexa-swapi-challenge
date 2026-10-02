@@ -8,6 +8,7 @@ import {
   Role,
 } from '../src/generated/prisma/client.js';
 import { normalizeEmail } from '../src/modules/users/normalize-email.js';
+import { MIN_PASSWORD_LENGTH } from '../src/modules/auth/password-policy.js';
 
 const databaseUrl = process.env['DATABASE_URL'];
 const adminEmail = process.env['SEED_ADMIN_EMAIL'];
@@ -23,6 +24,12 @@ if (!adminEmail) {
 
 if (!adminPassword) {
   throw new Error('SEED_ADMIN_PASSWORD is required to seed the database');
+}
+
+if (adminPassword.length < MIN_PASSWORD_LENGTH) {
+  throw new Error(
+    `SEED_ADMIN_PASSWORD must contain at least ${MIN_PASSWORD_LENGTH} characters`,
+  );
 }
 
 const adapter = new PrismaPg({

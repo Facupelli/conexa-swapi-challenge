@@ -12,7 +12,10 @@ const movieSchema = v.object({
 
 export const createMovieSchema = movieSchema;
 
-export const updateMovieSchema = v.partial(movieSchema);
+export const updateMovieSchema = v.pipe(
+  v.partial(movieSchema),
+  v.minEntries(1, 'At least one movie field must be provided'),
+);
 
 export const movieIdSchema = v.pipe(v.string(), v.uuid());
 
